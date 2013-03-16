@@ -1,0 +1,97 @@
+<?php
+
+/**
+ * @file
+ * Install, update, and uninstall functions for the Popup Ad module.
+ */
+
+/**
+ * Implements hook_schema().
+ */
+function popupad_schema() {
+  $schema = array();
+
+  $schema['popupad'] = array(
+    'description' => 'The base table for popup entities.',
+    'fields' => array(
+      'popup_id' => array(
+        'description' => 'Primary Key: Identifier for a popup.',
+        'type' => 'serial',
+        'unsigned' => TRUE,
+        'not null' => TRUE,
+      ),
+      'bundle_type' => array(
+        'description' => 'The type of the popup.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+      ),
+      'language' => array(
+        'description' => 'The language of the popup.',
+        'type' => 'varchar',
+        'length' => 32,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'name' => array(
+        'description' => 'The name of the popup - a human-readable identifier.',
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => TRUE,
+        'default' => '',
+      ),
+      'body' => array(
+        'type' => 'text',
+        'not null' => FALSE,
+        'description' => 'The body of the popup.',
+      ),
+      'format' => array(
+        'type' => 'varchar',
+        'length' => 255,
+        'not null' => FALSE,
+        'description' => 'Format of the popup\'s body.',
+      ),
+      'width' => array(
+        'description' => 'The width of the popup.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'height' => array(
+        'description' => 'The height of the popup.',
+        'type' => 'int',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+      'fixed_position' => array(
+        'description' => 'Indicate whether the popup position is fixed in the browser.',
+        'type' => 'int',
+        'size' => 'tiny',
+        'not null' => TRUE,
+        'default' => 0,
+      ),
+    ),
+    'primary key' => array('popup_id'),
+    'indexes' => array(
+      'bundle_type' => array('bundle_type'),
+    ),
+  );
+
+  return $schema;
+}
+
+/**
+ * Implements hook_uninstall().
+ */
+function popupad_uninstall() {
+  field_attach_delete_bundle('popupad', 'popupad_ad');
+
+  // Include module to resolve constants names.
+  require_once('popupad.module');
+
+  // Delete all popupad-related variables.
+  variable_del(POPUPAD_VAR_SORT_METHOD);
+  variable_del(POPUPAD_VAR_COOKIE_LIFETIME);
+  variable_del(POPUPAD_VAR_DISPLAY_DELAY);
+  variable_del(POPUPAD_VAR_USE_RULES);
+}

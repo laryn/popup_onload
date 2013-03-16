@@ -1,0 +1,5 @@
+name = Popup Advertisement Statistics
+description = Enable click/views statistics for popup advertisements.
+core = 7.x
+package = Popup Ad
+dependencies[] = popupad

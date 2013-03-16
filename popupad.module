@@ -1,0 +1,467 @@
+<?php
+
+/**
+ * @file
+ * Contains main popupad hooks and functions.
+ */
+
+define('POPUPAD_DEFAULT_COOKIE_NAME', 'popupad_time');
+
+define('POPUPAD_DEFAULT_COOKIE_LIFETIME', 14);
+
+define('POPUPAD_DEFAULT_COOKIE_PATH', '/');
+
+define('POPUPAD_DEFAULT_DELAY', 5000);
+
+define('POPUPAD_DEFAULT_SORT_METHOD', 'popupad_sort_method_random');
+
+define('POPUPAD_VAR_SORT_METHOD', 'popupad_sort_method');
+
+define('POPUPAD_VAR_COOKIE_LIFETIME', 'popupad_cookie_lifetime');
+
+define('POPUPAD_VAR_DISPLAY_DELAY', 'popupad_display_delay');
+
+define('POPUPAD_VAR_USE_RULES', 'popupad_use_rules');
+
+define('POPUPAD_VAR_INCLUDE_PATHS', 'popupad_include_paths');
+
+/**
+ * A stub to fetch all popupad entities.
+ */
+function popupad_get_popups_all() {
+  $popups = entity_load('popupad', FALSE);
+
+  return $popups;
+}
+
+/**
+ * Load the current popup using current choose method.
+ *
+ * @return object
+ *   Fully loaded popupad entity, or NULL if no popups have been chosen.
+ */
+function popupad_choose_popup() {
+  $popupad = NULL;
+
+  $cur_method = variable_get(POPUPAD_VAR_SORT_METHOD, POPUPAD_DEFAULT_SORT_METHOD);
+  $methods = popupad_sort_methods();
+
+  if (isset($methods[$cur_method]) && !empty($methods[$cur_method])) {
+    if (function_exists($cur_method)) {
+      $popupad = $cur_method();
+    }
+  }
+
+  return $popupad;
+}
+
+/**
+ * Implements popupad_check_display_conditions().
+ */
+function popupad_popupad_check_display_conditions($popupad) {
+  return !popupad_check_time_cookie();
+}
+
+/**
+ * Determine whether the popup is allowed to display.
+ *
+ * @param object $popupad
+ *   Fully populated popupad entity object
+ *
+ * @return bool
+ *   If at least one hook returns FALSE, the popup is denied
+ */
+function popupad_check_display_conditions($popupad) {
+  $conditions = module_invoke_all('popupad_check_display_conditions', $popupad);
+  return !in_array(FALSE, $conditions);
+}
+
+/**
+ * Checks whether the current path is included in popup settings.
+ */
+function popupad_check_path() {
+  global $theme_key;
+
+  $pages = variable_get(POPUPAD_VAR_INCLUDE_PATHS, '');
+  if (!empty($pages)) {
+    $pages = drupal_strtolower($pages);
+    // Further processing came from the blocks module.
+    // Convert the Drupal path to lowercase.
+    $path = drupal_strtolower(drupal_get_path_alias($_GET['q']));
+    // Compare the lowercase internal and lowercase path alias (if any).
+    $page_match = drupal_match_path($path, $pages);
+    if ($path != $_GET['q']) {
+      $page_match = $page_match || drupal_match_path($_GET['q'], $pages);
+    }
+  }
+  else {
+    $page_match = (bool) ($theme_key != variable_get('admin_theme', ''));
+  }
+
+  return $page_match;
+}
+/**
+ * Implements hook_init().
+ */
+function popupad_init() {
+  // Prevent popup from displaying on admin pages, if it is not explicitly overriden by include paths settings.
+  if (popupad_check_path()) {
+    // Is normal popup flow enabled.
+    if (!variable_get(POPUPAD_VAR_USE_RULES, FALSE)) {
+      if ($popupad = popupad_choose_popup()) {
+        if (popupad_check_display_conditions($popupad)) {
+          $popup_settings = popupad_prepare_popup($popupad);
+          popupad_add_popup($popup_settings);
+          popupad_save_time_cookie($popupad);
+        }
+      }
+    }
+    // Invoke rules event otherwise.
+    elseif (module_exists('rules')) {
+      if ($popupad = popupad_choose_popup()) {
+        rules_invoke_event('popupad_event_choose_popup', $popupad);
+      }
+    }
+  }
+}
+
+/**
+ * Callback of the popup sorting method, as specified in hook_popupad_sort_methods().
+ *
+ * @return object
+ *   Fully loaded popupad entity.
+ * @see hook_popupad_sort_methods()
+ */
+function popupad_sort_method_random() {
+  $popups = popupad_get_popups_all();
+  return (!empty($popups)) ? $popups[array_rand($popups)] : NULL;
+}
+
+/**
+ * Implements hook_popupad_sort_methods().
+ *
+ * @see popupad_sort_method_random()
+ */
+function popupad_popupad_sort_methods() {
+  return array(
+    POPUPAD_DEFAULT_SORT_METHOD => t('Random (default)'),
+  );
+}
+
+/**
+ * Returns an array of sort methods, declared in all enabled modules.
+ */
+function popupad_sort_methods() {
+  return module_invoke_all('popupad_sort_methods');
+}
+
+/**
+ * Generate Javascript parameters for popup.
+ *
+ * @param object $popupad
+ *   Fully populated popupad entity
+ *
+ * @return array
+ *   Popup javascript settings
+ */
+function popupad_prepare_popup($popupad) {
+  $popup_settings = array(
+    'html' => $popupad->body,
+    'delay' => variable_get(POPUPAD_VAR_DISPLAY_DELAY, POPUPAD_DEFAULT_DELAY),
+    'fixed' => (bool) $popupad->fixed_position,
+    'popup_id' => $popupad->popup_id,
+    'className' => 'popupad',
+    'close' => '',
+  );
+
+  if ($popupad->width) {
+    $popup_settings['innerWidth'] = $popupad->width;
+  }
+  if ($popupad->height) {
+    $popup_settings['innerHeight'] = $popupad->height;
+  }
+
+  // Let other modules alter popup settings.
+  drupal_alter('popupad_js_settings', $popup_settings, $popupad);
+
+  return $popup_settings;
+}
+
+/**
+ * Check if popupad cookie is set.
+ */
+function popupad_check_time_cookie($popupad = NULL) {
+  return isset($_COOKIE[POPUPAD_DEFAULT_COOKIE_NAME]);
+}
+
+/**
+ * Save popup display time into the cookie.
+ */
+function popupad_save_time_cookie() {
+  $expire_days = variable_get(POPUPAD_VAR_COOKIE_LIFETIME, POPUPAD_DEFAULT_COOKIE_LIFETIME);
+  $cur_time = time();
+  setcookie(POPUPAD_DEFAULT_COOKIE_NAME,
+      $cur_time,
+      strtotime("+$expire_days days", $cur_time),
+      '/');
+}
+
+/**
+ * Implements hook_libraries_info().
+ *
+ * Code has been taken from Colorbox module.
+ */
+function popupad_libraries_info() {
+  $libraries['colorbox'] = array(
+    'name' => 'Colorbox plugin',
+    'vendor url' => 'http://www.jacklmoore.com/colorbox',
+    'download url' => 'http://www.jacklmoore.com/colorbox',
+    'version arguments' => array(
+      'file' => 'jquery.colorbox-min.js',
+      'pattern' => '@ColorBox v([0-9\.a-z]+)@',
+      'lines' => 5,
+    ),
+    'files' => array(
+      'js' => array(
+        'jquery.colorbox-min.js',
+      ),
+    ),
+    'variants' => array(
+      'minified' => array(
+        'files' => array(
+          'js' => array(
+            'jquery.colorbox-min.js',
+          ),
+        ),
+      ),
+      'source' => array(
+        'files' => array(
+          'js' => array(
+            'jquery.colorbox.js',
+          ),
+        ),
+      ),
+    ),
+  );
+
+  return $libraries;
+}
+
+/**
+ * Add a popup to the current page.
+ */
+function popupad_add_popup($popup_settings) {
+  // Add and initialise the Colorbox plugin.
+  libraries_load('colorbox', 'minified');
+
+  $module_path = drupal_get_path('module', 'popupad');
+
+  // Add popupad javascripts.
+  drupal_add_js(array('popupad' => $popup_settings), 'setting');
+  drupal_add_js($module_path . '/popupad.js');
+
+  // Add some basic colorbox styling.
+  drupal_add_css($module_path . '/popupad-colorbox.css');
+}
+
+/**
+ * Implements hook_entity_info().
+ */
+function popupad_entity_info() {
+  $info['popupad'] = array(
+    'label' => t('Popup Ad'),
+    'entity class' => 'PopupAd',
+    'controller class' => 'PopupAdController',
+    'base table' => 'popupad',
+    'fieldable' => TRUE,
+    'entity keys' => array(
+      'id' => 'popup_id',
+      'bundle' => 'bundle_type',
+      'label' => 'name',
+      'language' => 'language',
+    ),
+    'bundle keys' => array(
+      'bundle' => 'bundle_type',
+    ),
+    'bundles' => array(
+      'popupad_ad' => array(
+        'label' => 'Popup Ad',
+        'admin' => array(
+          'path' => 'admin/structure/popupad',
+          'access arguments' => array('administer popupad entities'),
+        ),
+      ),
+    ),
+    'access callback' => 'popupad_access',
+    'module' => 'popupad',
+    'admin ui' => array(
+      'path' => 'admin/structure/popupad',
+      'file' => 'popupad.admin.inc',
+    ),
+  );
+
+  return $info;
+}
+
+/**
+ * Access callback for the entity API.
+ */
+function popupad_access($op, $type = NULL, $account = NULL) {
+  return user_access('administer popupad entities', $account);
+}
+
+/**
+ * Fetch a popupad object.
+ */
+function popupad_load($popupad_id = NULL, $reset = FALSE) {
+  $popupad_ids = (isset($popupad_id) ? array($popupad_id) : array());
+  $popupad = popupad_load_multiple($popupad_ids, array(), $reset);
+  return $popupad ? reset($popupad) : FALSE;
+}
+
+/**
+ * Loads multiple popupad entities.
+ */
+function popupad_load_multiple($popupad_ids = FALSE, $conditions = array(), $reset = FALSE) {
+  return entity_load('popupad', $popupad_ids, $conditions, $reset);
+}
+
+/**
+ * Implements hook_menu().
+ */
+function popupad_menu() {
+  $items = array();
+
+  $items['admin/config/user-interface/popupad'] = array(
+    'title' => 'Popup Ad',
+    'description' => 'Configure popup advertisements on the site.',
+    'page callback' => 'drupal_get_form',
+    'page arguments' => array('popupad_admin_settings_form'),
+    'file' => 'popupad.admin.inc',
+    'access arguments' => array('administer popupad entities'),
+    'type' => MENU_NORMAL_ITEM,
+  );
+
+  return $items;
+}
+
+/**
+ * Implements hook_permission().
+ */
+function popupad_permission() {
+  $permissions = array(
+    'administer popupad entities' => array(
+      'title' => t('Administer Popup Ad entities'),
+    ),
+  );
+  return $permissions;
+}
+
+/**
+ * Implements hook_field_extra_fields().
+ */
+function popupad_field_extra_fields() {
+  $form_elements['name'] = array(
+    'label' => t('Name'),
+    'description' => t('Popup name'),
+    'weight' => 0,
+  );
+  $form_elements['body'] = array(
+    'label' => t('Body'),
+    'description' => t('Popup body'),
+    'weight' => 1,
+  );
+  $form_elements['width'] = array(
+    'label' => t('Width'),
+    'description' => t('Popup width'),
+    'weight' => 2,
+  );
+  $form_elements['height'] = array(
+    'label' => t('Height'),
+    'description' => t('Popup height'),
+    'weight' => 3,
+  );
+  $form_elements['fixed_position'] = array(
+    'label' => t('Fixed position'),
+    'description' => t('Whether a popup is fixed'),
+    'weight' => 4,
+  );
+
+  // Since we have only one bundle type, we'll just provide the extra_fields
+  // for it here.
+  $extra_fields['popupad']['popupad_ad']['form'] = $form_elements;
+
+  return $extra_fields;
+}
+
+/**
+ * PopupAdControllerController extends DrupalDefaultEntityController.
+ */
+class PopupAdController
+extends EntityAPIController {
+
+  /**
+   * Controller constructor.
+   */
+  public function __construct($entityType) {
+    parent::__construct($entityType);
+  }
+
+  /**
+   * Create a popupad.
+   * @see EntityAPIController::create()
+   */
+  public function create(array $values = array()) {
+    // Add values that are specific to our popupad.
+    $values += array(
+      'popup_id' => '',
+      'bundle_type' => 'popupad_ad',
+      'is_new' => TRUE,
+      'language' => '',
+      'name' => '',
+      'body' => '',
+      'format' => '',
+      'width' => 0,
+      'height' => 0,
+      'fixed_position' => 0,
+    );
+
+    $popupad = parent::create($values);
+    return $popupad;
+  }
+
+  /**
+   * Save the popup.
+   * @see EntityAPIController::save()
+   */
+  public function save($entity, DatabaseTransaction $transaction = NULL) {
+    // Make use of the formatted body field.
+    $entity->format = $entity->body['format'];
+    $entity->body = $entity->body['value'];
+    parent::save($entity, $transaction);
+  }
+
+}
+
+/**
+ * The class used for popupad entities.
+ */
+class PopupAd
+extends Entity {
+
+  /**
+   * Entity constructor.
+   */
+  public function __construct($values = array()) {
+    parent::__construct($values, 'popupad');
+  }
+
+  /**
+   * Overriden default entity label callback.
+   * @see Entity::defaultLabel()
+   */
+  protected function defaultLabel() {
+    return $this->name;
+  }
+
+}

@@ -1,0 +1,10 @@
+name = Popup Ad Display
+description = A basic rule for displaying popup advertisements.
+core = 7.x
+package = Popup Ad
+dependencies[] = entity
+dependencies[] = popupad
+dependencies[] = rules
+dependencies[] = features
+features[features_api][] = api:1
+features[rules_config][] = rules_display_popupad
