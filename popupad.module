@@ -56,7 +56,7 @@ function popupad_choose_popup() {
 }
 
 /**
- * Implements popupad_check_display_conditions().
+ * Implements hook_popupad_check_display_conditions().
  */
 function popupad_popupad_check_display_conditions($popupad) {
   return !popupad_check_time_cookie();
