@@ -48,16 +48,16 @@ extends EntityAPIController {
   public function create(array $values = array()) {
     // Add values that are specific to our popupad.
     $values += array(
-        'popup_id' => '',
-        'bundle_type' => 'popupad_ad',
-        'is_new' => TRUE,
-        'language' => '',
-        'name' => '',
-        'body' => '',
-        'format' => '',
-        'width' => 0,
-        'height' => 0,
-        'fixed_position' => 0,
+      'popup_id' => '',
+      'bundle_type' => 'popupad_ad',
+      'is_new' => TRUE,
+      'language' => '',
+      'name' => '',
+      'body' => '',
+      'format' => '',
+      'width' => 0,
+      'height' => 0,
+      'fixed_position' => 0,
     );
 
     $popupad = parent::create($values);
