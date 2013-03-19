@@ -43,10 +43,10 @@ function popupad_statistics_admin_form($form, &$form_state) {
   );
 
   if ($date_from) {
-    $date_from = strtotime($date_from['year'] .'-'. $date_from['month'] .'-'. $date_from['day']);
+    $date_from = strtotime($date_from['year'] . '-' . $date_from['month'] . '-' . $date_from['day']);
   }
   if ($date_to) {
-    $date_to = strtotime($date_to['year'] .'-'. $date_to['month'] .'-'. $date_to['day']);
+    $date_to = strtotime($date_to['year'] . '-' . $date_to['month'] . '-' . $date_to['day']);
   }
 
   $stats = popupad_statistics_get_stats($date_from, $date_to);

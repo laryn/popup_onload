@@ -28,11 +28,11 @@ function theme_popupad_statistics_table($vars) {
     if (!isset($row['click'])) {
       $row['click'] = 0;
     }
-    $rate = $row['view'] != 0
-      ? $row['click'] / $row['view']
-      : 0;
+    $rate = $row['view'] != 0 ?
+      $row['click'] / $row['view'] :
+      0;
     $stats_table['rows'][] = array(
-      l($row['name'], 'admin/structure/popupad/manage/'. $row['popup_id'], array('attributes' => array('target' => '_blank'))),
+      l($row['name'], 'admin/structure/popupad/manage/' . $row['popup_id'], array('attributes' => array('target' => '_blank'))),
       isset($row['view']) ? $row['view'] : 0,
       isset($row['click']) ? $row['click'] : 0,
       sprintf('%.2f%%', $rate * 100),

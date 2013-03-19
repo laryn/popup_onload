@@ -41,7 +41,7 @@ function popupad_statistics_init() {
  * Add popup statistics JS to the page.
  */
 function popupad_statistics_add_js() {
-  drupal_add_js(drupal_get_path('module', 'popupad_statistics') .'/popupad_statistics.js');
+  drupal_add_js(drupal_get_path('module', 'popupad_statistics') . '/popupad_statistics.js');
 }
 
 /**
@@ -106,7 +106,7 @@ function popupad_statistics_get_stats($date_from = NULL, $date_to = NULL) {
   }
 
   $query = db_select('popupad', 'p');
-  $query->leftJoin('popupad_statistics', 'sps', 'sps.popup_id = p.popup_id '. $date_sql, $params);
+  $query->leftJoin('popupad_statistics', 'sps', 'sps.popup_id = p.popup_id ' . $date_sql, $params);
   $query->addExpression('COUNT(sps.type)', 'action_count');
   $query
     ->fields('p', array('name', 'popup_id'))
