@@ -87,7 +87,7 @@ function popupad_uninstall() {
   field_attach_delete_bundle('popupad', 'popupad_ad');
 
   // Include module to resolve constants names.
-  require_once('popupad.module');
+  require_once 'popupad.module';
 
   // Delete all popupad-related variables.
   variable_del(POPUPAD_VAR_SORT_METHOD);

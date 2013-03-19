@@ -10,10 +10,10 @@ Drupal.behaviors.initPopupAd = {
     if (!$.isFunction($.colorbox)) {
       return;
     }
-    
+
     $('body', context).once('popupad', function() {
       var popupad_settings = settings.popupad;
-    
+
       setTimeout(function() {
         $.colorbox(popupad_settings);
       }, popupad_settings.delay);
