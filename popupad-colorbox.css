@@ -1,4 +1,6 @@
-@CHARSET "UTF-8";
+/**
+ * Basic colorbox styling, plus custom close button.
+ */
 
 #colorbox, #cboxOverlay, #cboxWrapper {
   position: absolute;
