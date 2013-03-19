@@ -1,6 +1,11 @@
 <?php
 
 /**
+ * @file
+ * Rules-related hooks and functions.
+ */
+
+/**
  * Implements hook_rules_event_info().
  */
 function popupad_rules_event_info() {
