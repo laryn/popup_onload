@@ -5,5 +5,7 @@ package = Popup Ad
 
 configure = admin/config/user-interface/popupad
 
+files[] = popupad.entity.inc
+
 dependencies[] = libraries (2.x)
 dependencies[] = entity
