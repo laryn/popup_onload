@@ -35,7 +35,7 @@ function popupad_form($form, &$form_state, $popupad, $op = 'edit') {
     '#title' => t('Width'),
     '#type' => 'textfield',
     '#default_value' => $popupad->width,
-    '#description' => t('The width of the popup. "0" defaults to auto-detection.'),
+    '#description' => t('The width of the popup, given in pixels. "0" defaults to auto-detection.'),
     '#required' => TRUE,
   );
 
@@ -43,7 +43,7 @@ function popupad_form($form, &$form_state, $popupad, $op = 'edit') {
     '#title' => t('Height'),
     '#type' => 'textfield',
     '#default_value' => $popupad->height,
-    '#description' => t('The height of the popup. "0" defaults to auto-detection.'),
+    '#description' => t('The height of the popup, given in pixels. "0" defaults to auto-detection.'),
     '#required' => TRUE,
   );
 
@@ -87,6 +87,16 @@ function popupad_form_submit(&$form, &$form_state) {
  * Popup Ad admin settings form.
  */
 function popupad_admin_settings_form($form, &$form_state) {
+  // Check if colorbox library is installed.
+  $library_colorbox = libraries_detect('colorbox');
+
+  if (!$library_colorbox['installed']) {
+    $error_message = $library_colorbox['error message'];
+    $error_message .= '<br />'.
+      t('You can download the colorbox library !here',
+        array('!here' => l('here', $library_colorbox['download url'])));
+    drupal_set_message($error_message, 'error', FALSE);
+  }
 
   // Create the list of all sorting methods to be used in the form.
   $methods = popupad_sort_methods();
@@ -142,4 +152,19 @@ function popupad_admin_settings_form($form, &$form_state) {
   );
 
   return system_settings_form($form);
+}
+
+/**
+ * Popup Ad admin settings form validation callback.
+ */
+function popupad_admin_settings_form_validate($form, &$form_state) {
+  $numeric_values = array(
+    POPUPAD_VAR_COOKIE_LIFETIME,
+    POPUPAD_VAR_DISPLAY_DELAY,
+  );
+  foreach ($numeric_values as $form_field) {
+    if (!is_numeric($form_state['values'][$form_field])) {
+      form_set_error($form_field, t('Please specify numeric value.'));
+    }
+  }
 }

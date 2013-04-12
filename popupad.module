@@ -106,22 +106,27 @@ function popupad_check_path() {
  * Implements hook_init().
  */
 function popupad_init() {
-  // Prevent popup from displaying on admin pages, if it is not explicitly overriden by include paths settings.
-  if (popupad_check_path()) {
-    // Is normal popup flow enabled.
-    if (!variable_get(POPUPAD_VAR_USE_RULES, FALSE)) {
-      if ($popupad = popupad_choose_popup()) {
-        if (popupad_check_display_conditions($popupad)) {
-          $popup_settings = popupad_prepare_popup($popupad);
-          popupad_add_popup($popup_settings);
-          popupad_save_time_cookie($popupad);
+  // Check if colorbox library is installed.
+  $library_colorbox = libraries_detect('colorbox');
+
+  if ($library_colorbox['installed']) {
+    // Prevent popup from displaying on admin pages, if it is not explicitly overriden by include paths settings.
+    if (popupad_check_path()) {
+      // Is normal popup flow enabled.
+      if (!variable_get(POPUPAD_VAR_USE_RULES, FALSE)) {
+        if ($popupad = popupad_choose_popup()) {
+          if (popupad_check_display_conditions($popupad)) {
+            $popup_settings = popupad_prepare_popup($popupad);
+            popupad_add_popup($popup_settings);
+            popupad_save_time_cookie($popupad);
+          }
         }
       }
-    }
-    // Invoke rules event otherwise.
-    elseif (module_exists('rules')) {
-      if ($popupad = popupad_choose_popup()) {
-        rules_invoke_event('popupad_event_choose_popup', $popupad);
+      // Invoke rules event otherwise.
+      elseif (module_exists('rules')) {
+        if ($popupad = popupad_choose_popup()) {
+          rules_invoke_event('popupad_event_choose_popup', $popupad);
+        }
       }
     }
   }
@@ -220,7 +225,7 @@ function popupad_libraries_info() {
     'download url' => 'http://www.jacklmoore.com/colorbox',
     'version arguments' => array(
       'file' => 'jquery.colorbox-min.js',
-      'pattern' => '@ColorBox v([0-9\.a-z]+)@',
+      'pattern' => '@Colorbox v([0-9\.a-z]+)@',
       'lines' => 5,
     ),
     'files' => array(
@@ -289,7 +294,7 @@ function popupad_entity_info() {
       'popupad_ad' => array(
         'label' => 'Popup Ad',
         'admin' => array(
-          'path' => 'admin/structure/popupad',
+          'path' => 'admin/content/popupad',
           'access arguments' => array('administer popupad entities'),
         ),
       ),
@@ -297,7 +302,7 @@ function popupad_entity_info() {
     'access callback' => 'popupad_access',
     'module' => 'popupad',
     'admin ui' => array(
-      'path' => 'admin/structure/popupad',
+      'path' => 'admin/content/popupad',
       'file' => 'popupad.admin.inc',
     ),
   );
