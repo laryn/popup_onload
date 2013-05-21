@@ -134,8 +134,7 @@ function popupad_init() {
 }
 
 /**
- * Callback of the popup sorting method, as specified
- * in hook_popupad_sort_methods().
+ * Callback of the popup sorting method.
  *
  * @return object
  *   Fully loaded popupad entity.
