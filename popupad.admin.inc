@@ -92,9 +92,9 @@ function popupad_admin_settings_form($form, &$form_state) {
 
   if (!$library_colorbox['installed']) {
     $error_message = $library_colorbox['error message'];
-    $error_message .= '<br />'.
+    $error_message .= '<br />' .
       t('You can download the colorbox library !here',
-        array('!here' => l('here', $library_colorbox['download url'])));
+        array('!here' => l(t('here'), $library_colorbox['download url'])));
     drupal_set_message($error_message, 'error', FALSE);
   }
 
