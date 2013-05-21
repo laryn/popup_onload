@@ -110,7 +110,8 @@ function popupad_init() {
   $library_colorbox = libraries_detect('colorbox');
 
   if ($library_colorbox['installed']) {
-    // Prevent popup from displaying on admin pages, if it is not explicitly overriden by include paths settings.
+    // Prevent popup from displaying on admin pages, if it is not explicitly
+    // overriden by include paths settings.
     if (popupad_check_path()) {
       // Is normal popup flow enabled.
       if (!variable_get(POPUPAD_VAR_USE_RULES, FALSE)) {
@@ -133,7 +134,8 @@ function popupad_init() {
 }
 
 /**
- * Callback of the popup sorting method, as specified in hook_popupad_sort_methods().
+ * Callback of the popup sorting method, as specified
+ * in hook_popupad_sort_methods().
  *
  * @return object
  *   Fully loaded popupad entity.
