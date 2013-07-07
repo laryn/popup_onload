@@ -9,3 +9,4 @@ files[] = popupad.entity.inc
 
 dependencies[] = libraries (2.x)
 dependencies[] = entity
+dependencies[] = field_ui

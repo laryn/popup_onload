@@ -295,7 +295,7 @@ function popupad_entity_info() {
       'popupad_ad' => array(
         'label' => 'Popup Ad',
         'admin' => array(
-          'path' => 'admin/content/popupad',
+          'path' => 'admin/structure/popupad/manage',
           'access arguments' => array('administer popupad entities'),
         ),
       ),
@@ -348,6 +348,11 @@ function popupad_menu() {
     'file' => 'popupad.admin.inc',
     'access arguments' => array('administer popupad entities'),
     'type' => MENU_NORMAL_ITEM,
+  );
+
+  $items['admin/structure/popupad/manage'] = array(
+    'title' => 'Popup Ad',
+    'access arguments' => array('administer popupad entities'),
   );
 
   return $items;
