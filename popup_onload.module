@@ -5,25 +5,25 @@
  * Contains main popup_onload hooks and functions.
  */
 
-define('POPUPONLOAD_DEFAULT_COOKIE_NAME', 'popup_onload_time');
+define('POPUP_ONLOAD_DEFAULT_COOKIE_NAME', 'popup_onload_time');
 
-define('POPUPONLOAD_DEFAULT_COOKIE_LIFETIME', 14);
+define('POPUP_ONLOAD_DEFAULT_COOKIE_LIFETIME', 14);
 
-define('POPUPONLOAD_DEFAULT_COOKIE_PATH', '/');
+define('POPUP_ONLOAD_DEFAULT_COOKIE_PATH', '/');
 
-define('POPUPONLOAD_DEFAULT_DELAY', 5000);
+define('POPUP_ONLOAD_DEFAULT_DELAY', 5000);
 
-define('POPUPONLOAD_DEFAULT_SORT_METHOD', 'popup_onload_sort_method_random');
+define('POPUP_ONLOAD_DEFAULT_SORT_METHOD', 'popup_onload_sort_method_random');
 
-define('POPUPONLOAD_VAR_SORT_METHOD', 'popup_onload_sort_method');
+define('POPUP_ONLOAD_VAR_SORT_METHOD', 'popup_onload_sort_method');
 
-define('POPUPONLOAD_VAR_COOKIE_LIFETIME', 'popup_onload_cookie_lifetime');
+define('POPUP_ONLOAD_VAR_COOKIE_LIFETIME', 'popup_onload_cookie_lifetime');
 
-define('POPUPONLOAD_VAR_DISPLAY_DELAY', 'popup_onload_display_delay');
+define('POPUP_ONLOAD_VAR_DISPLAY_DELAY', 'popup_onload_display_delay');
 
-define('POPUPONLOAD_VAR_USE_RULES', 'popup_onload_use_rules');
+define('POPUP_ONLOAD_VAR_USE_RULES', 'popup_onload_use_rules');
 
-define('POPUPONLOAD_VAR_INCLUDE_PATHS', 'popup_onload_include_paths');
+define('POPUP_ONLOAD_VAR_INCLUDE_PATHS', 'popup_onload_include_paths');
 
 /**
  * A stub to fetch all popup_onload entities.
@@ -43,7 +43,7 @@ function popup_onload_get_popups_all() {
 function popup_onload_choose_popup() {
   $popup_onload = NULL;
 
-  $cur_method = variable_get(POPUPONLOAD_VAR_SORT_METHOD, POPUPONLOAD_DEFAULT_SORT_METHOD);
+  $cur_method = variable_get(POPUP_ONLOAD_VAR_SORT_METHOD, POPUP_ONLOAD_DEFAULT_SORT_METHOD);
   $methods = popup_onload_sort_methods();
 
   if (isset($methods[$cur_method]) && !empty($methods[$cur_method])) {
@@ -84,7 +84,7 @@ function popup_onload_check_display_conditions($popup_onload) {
 function popup_onload_check_path() {
   global $theme_key;
 
-  $pages = variable_get(POPUPONLOAD_VAR_INCLUDE_PATHS, '');
+  $pages = variable_get(POPUP_ONLOAD_VAR_INCLUDE_PATHS, '');
   if (!empty($pages)) {
     $pages = drupal_strtolower($pages);
     // Further processing came from the blocks module.
@@ -114,7 +114,7 @@ function popup_onload_init() {
     // overriden by include paths settings.
     if (popup_onload_check_path()) {
       // Is normal popup flow enabled.
-      if (!variable_get(POPUPONLOAD_VAR_USE_RULES, FALSE)) {
+      if (!variable_get(POPUP_ONLOAD_VAR_USE_RULES, FALSE)) {
         if ($popup_onload = popup_onload_choose_popup()) {
           if (popup_onload_check_display_conditions($popup_onload)) {
             $popup_settings = popup_onload_prepare_popup($popup_onload);
@@ -152,7 +152,7 @@ function popup_onload_sort_method_random() {
  */
 function popup_onload_popup_onload_sort_methods() {
   return array(
-    POPUPONLOAD_DEFAULT_SORT_METHOD => t('Random (default)'),
+    POPUP_ONLOAD_DEFAULT_SORT_METHOD => t('Random (default)'),
   );
 }
 
@@ -175,7 +175,7 @@ function popup_onload_sort_methods() {
 function popup_onload_prepare_popup($popup_onload) {
   $popup_settings = array(
     'html' => $popup_onload->body,
-    'delay' => variable_get(POPUPONLOAD_VAR_DISPLAY_DELAY, POPUPONLOAD_DEFAULT_DELAY),
+    'delay' => variable_get(POPUP_ONLOAD_VAR_DISPLAY_DELAY, POPUP_ONLOAD_DEFAULT_DELAY),
     'fixed' => (bool) $popup_onload->fixed_position,
     'popup_id' => $popup_onload->popup_id,
     'className' => 'popup_onload',
@@ -199,16 +199,16 @@ function popup_onload_prepare_popup($popup_onload) {
  * Check if popup_onload cookie is set.
  */
 function popup_onload_check_time_cookie($popup_onload = NULL) {
-  return isset($_COOKIE[POPUPONLOAD_DEFAULT_COOKIE_NAME]);
+  return isset($_COOKIE[POPUP_ONLOAD_DEFAULT_COOKIE_NAME]);
 }
 
 /**
  * Save popup display time into the cookie.
  */
 function popup_onload_save_time_cookie() {
-  $expire_days = variable_get(POPUPONLOAD_VAR_COOKIE_LIFETIME, POPUPONLOAD_DEFAULT_COOKIE_LIFETIME);
+  $expire_days = variable_get(POPUP_ONLOAD_VAR_COOKIE_LIFETIME, POPUP_ONLOAD_DEFAULT_COOKIE_LIFETIME);
   $cur_time = time();
-  setcookie(POPUPONLOAD_DEFAULT_COOKIE_NAME,
+  setcookie(POPUP_ONLOAD_DEFAULT_COOKIE_NAME,
       $cur_time,
       strtotime("+$expire_days days", $cur_time),
       '/');

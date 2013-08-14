@@ -90,8 +90,8 @@ function popup_onload_uninstall() {
   require_once 'popup_onload.module';
 
   // Delete all popup_onload-related variables.
-  variable_del(POPUPONLOAD_VAR_SORT_METHOD);
-  variable_del(POPUPONLOAD_VAR_COOKIE_LIFETIME);
-  variable_del(POPUPONLOAD_VAR_DISPLAY_DELAY);
-  variable_del(POPUPONLOAD_VAR_USE_RULES);
+  variable_del(POPUP_ONLOAD_VAR_SORT_METHOD);
+  variable_del(POPUP_ONLOAD_VAR_COOKIE_LIFETIME);
+  variable_del(POPUP_ONLOAD_VAR_DISPLAY_DELAY);
+  variable_del(POPUP_ONLOAD_VAR_USE_RULES);
 }

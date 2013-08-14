@@ -109,10 +109,10 @@ function popup_onload_admin_settings_form($form, &$form_state) {
     '#description' => t('How to determine the popup, displayed to the user.'),
   );
 
-  $form['sort_methods'][POPUPONLOAD_VAR_SORT_METHOD] = array(
+  $form['sort_methods'][POPUP_ONLOAD_VAR_SORT_METHOD] = array(
     '#type' => 'radios',
     '#options' => $methods,
-    '#default_value' => variable_get(POPUPONLOAD_VAR_SORT_METHOD, POPUPONLOAD_DEFAULT_SORT_METHOD),
+    '#default_value' => variable_get(POPUP_ONLOAD_VAR_SORT_METHOD, POPUP_ONLOAD_DEFAULT_SORT_METHOD),
   );
 
   $form['misc'] = array(
@@ -123,32 +123,32 @@ function popup_onload_admin_settings_form($form, &$form_state) {
     '#description' => t('Misc settings.'),
   );
 
-  $form['misc'][POPUPONLOAD_VAR_COOKIE_LIFETIME] = array(
+  $form['misc'][POPUP_ONLOAD_VAR_COOKIE_LIFETIME] = array(
     '#type' => 'textfield',
     '#title' => t('Popup cookie lifetime'),
     '#description' => t('How many days popups will not be displayed to the user after the first display.'),
-    '#default_value' => variable_get(POPUPONLOAD_VAR_COOKIE_LIFETIME, POPUPONLOAD_DEFAULT_COOKIE_LIFETIME),
+    '#default_value' => variable_get(POPUP_ONLOAD_VAR_COOKIE_LIFETIME, POPUP_ONLOAD_DEFAULT_COOKIE_LIFETIME),
   );
 
-  $form['misc'][POPUPONLOAD_VAR_DISPLAY_DELAY] = array(
+  $form['misc'][POPUP_ONLOAD_VAR_DISPLAY_DELAY] = array(
     '#type' => 'textfield',
     '#title' => t('Popup display delay'),
     '#description' => t('Delay in milliseconds before the popup is displayed to the user.'),
-    '#default_value' => variable_get(POPUPONLOAD_VAR_DISPLAY_DELAY, POPUPONLOAD_DEFAULT_DELAY),
+    '#default_value' => variable_get(POPUP_ONLOAD_VAR_DISPLAY_DELAY, POPUP_ONLOAD_DEFAULT_DELAY),
   );
 
-  $form['misc'][POPUPONLOAD_VAR_USE_RULES] = array(
+  $form['misc'][POPUP_ONLOAD_VAR_USE_RULES] = array(
     '#type' => 'checkbox',
     '#title' => t('Disable normal popup processing'),
     '#description' => t('If set, popup_onload module will stay enabled, but popup display will be invoked only as a Rules module action.'),
-    '#default_value' => variable_get(POPUPONLOAD_VAR_USE_RULES, FALSE),
+    '#default_value' => variable_get(POPUP_ONLOAD_VAR_USE_RULES, FALSE),
   );
 
-  $form['misc'][POPUPONLOAD_VAR_INCLUDE_PATHS] = array(
+  $form['misc'][POPUP_ONLOAD_VAR_INCLUDE_PATHS] = array(
     '#type' => 'textarea',
     '#title' => t('Display only at specified paths'),
     '#description' => t('Specify pages by using their paths. Enter one path per line. Use the "*" character as a wildcard. Leave empty to include all pages, except admin ones. %front is the front page.', array('%front' => '<front>')),
-    '#default_value' => variable_get(POPUPONLOAD_VAR_INCLUDE_PATHS, ''),
+    '#default_value' => variable_get(POPUP_ONLOAD_VAR_INCLUDE_PATHS, ''),
   );
 
   return system_settings_form($form);
@@ -159,8 +159,8 @@ function popup_onload_admin_settings_form($form, &$form_state) {
  */
 function popup_onload_admin_settings_form_validate($form, &$form_state) {
   $numeric_values = array(
-    POPUPONLOAD_VAR_COOKIE_LIFETIME,
-    POPUPONLOAD_VAR_DISPLAY_DELAY,
+    POPUP_ONLOAD_VAR_COOKIE_LIFETIME,
+    POPUP_ONLOAD_VAR_DISPLAY_DELAY,
   );
   foreach ($numeric_values as $form_field) {
     if (!is_numeric($form_state['values'][$form_field])) {
