@@ -6,16 +6,16 @@
  */
 
 /**
- * The class used for popupad entities.
+ * The class used for popup_onload entities.
  */
-class PopupAd
+class PopupOnLoad
 extends Entity {
 
   /**
    * Entity constructor.
    */
   public function __construct($values = array()) {
-    parent::__construct($values, 'popupad');
+    parent::__construct($values, 'popup_onload');
   }
 
   /**
@@ -29,9 +29,9 @@ extends Entity {
 }
 
 /**
- * PopupAdControllerController extends DrupalDefaultEntityController.
+ * PopupOnLoadControllerController extends DrupalDefaultEntityController.
  */
-class PopupAdController
+class PopupOnLoadController
 extends EntityAPIController {
 
   /**
@@ -42,14 +42,14 @@ extends EntityAPIController {
   }
 
   /**
-   * Create a popupad.
+   * Create a popup_onload.
    * @see EntityAPIController::create()
    */
   public function create(array $values = array()) {
-    // Add values that are specific to our popupad.
+    // Add values that are specific to our popup_onload.
     $values += array(
       'popup_id' => '',
-      'bundle_type' => 'popupad_ad',
+      'bundle_type' => 'popup_onload_basic',
       'is_new' => TRUE,
       'language' => '',
       'name' => '',
@@ -60,8 +60,8 @@ extends EntityAPIController {
       'fixed_position' => 0,
     );
 
-    $popupad = parent::create($values);
-    return $popupad;
+    $popup_onload = parent::create($values);
+    return $popup_onload;
   }
 
   /**

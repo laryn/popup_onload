@@ -8,7 +8,7 @@
 /**
  * Callback for the admin report table.
  */
-function popupad_statistics_admin_form($form, &$form_state) {
+function popup_onload_statistics_admin_form($form, &$form_state) {
   $form = array();
 
   $get_query = drupal_get_query_parameters();
@@ -49,8 +49,8 @@ function popupad_statistics_admin_form($form, &$form_state) {
     $date_to = strtotime($date_to['year'] . '-' . $date_to['month'] . '-' . $date_to['day']);
   }
 
-  $stats = popupad_statistics_get_stats($date_from, $date_to);
-  $stats_table = theme('popupad_statistics_table', array('stats' => $stats));
+  $stats = popup_onload_statistics_get_stats($date_from, $date_to);
+  $stats_table = theme('popup_onload_statistics_table', array('stats' => $stats));
 
   $form['stats_table'] = array(
     '#markup' => $stats_table,

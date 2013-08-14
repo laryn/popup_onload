@@ -1,10 +1,10 @@
-name = Popup Ad Display
-description = A basic rule for displaying popup advertisements.
+name = Popup On Load Display
+description = A basic rule for displaying popup on page load.
 core = 7.x
-package = Popup Ad
+package = Popup On Load
 dependencies[] = entity
-dependencies[] = popupad
+dependencies[] = popup_onload
 dependencies[] = rules
 dependencies[] = features
 features[features_api][] = api:1
-features[rules_config][] = rules_display_popupad
+features[rules_config][] = rules_display_popup_onload

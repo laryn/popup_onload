@@ -5,37 +5,37 @@
 
 (function ($) {
 
-Drupal.behaviors.attachPopupAdStatistics = {
+Drupal.behaviors.attachPopupOnLoadStatistics = {
 
   attach: function (context, settings) {
     if (!$.isFunction($.colorbox)) {
         return;
       }
 
-    function PopupAdStatisticsLogAction(atype) {
-      var popupad_settings = settings.popupad;
+    function PopupOnLoadStatisticsLogAction(atype) {
+      var popup_onload_settings = settings.popup_onload;
 
       $.ajax({
         async: false,
         dataType: 'json',
         data: {
           atype: atype,
-          popup_id: popupad_settings.popup_id
+          popup_id: popup_onload_settings.popup_id
         },
         type: 'POST',
-        url: '/popupad_stats_log'
+        url: '/popup_onload_stats_log'
       });
     }
 
     $(document).bind('cbox_complete', function() {
-      PopupAdStatisticsLogAction('view');
+      PopupOnLoadStatisticsLogAction('view');
 
-      $('#colorbox.popupad a, #colorbox.popupad area').click(function (event) {
-        PopupAdStatisticsLogAction('click');
+      $('#colorbox.popup_onload a, #colorbox.popup_onload area').click(function (event) {
+        PopupOnLoadStatisticsLogAction('click');
         return true;
       });
-      $('#colorbox.popupad form').submit(function (event) {
-        PopupAdStatisticsLogAction('click');
+      $('#colorbox.popup_onload form').submit(function (event) {
+        PopupOnLoadStatisticsLogAction('click');
         return true;
       });
     });

@@ -8,16 +8,16 @@
 /**
  * Implements hook_rules_event_info().
  */
-function popupad_rules_event_info() {
+function popup_onload_rules_event_info() {
   return array(
-    'popupad_event_choose_popup' => array(
+    'popup_onload_event_choose_popup' => array(
       'label' => t('There is a popup to display'),
-      'group' => t('Popup Ad'),
+      'group' => t('Popup On Load'),
       'variables' => array(
-        'popupad' => array(
-          'label' => t('popup ad entity'),
-          'type' => 'popupad',
-          'access callback' => 'popupad_integration_access',
+        'popup_onload' => array(
+          'label' => t('popup-on-load entity'),
+          'type' => 'popup_onload',
+          'access callback' => 'popup_onload_integration_access',
         ),
       ),
     ),
@@ -27,17 +27,17 @@ function popupad_rules_event_info() {
 /**
  * Implements hook_rules_condition_info().
  */
-function popupad_rules_condition_info() {
+function popup_onload_rules_condition_info() {
   return array(
-    'popupad_condition_check_cookie' => array(
-      'label' => t('Popup advertisement cookie is not set'),
+    'popup_onload_condition_check_cookie' => array(
+      'label' => t('Popup-on-load cookie is not set'),
       'parameter' => array(
-        'popupad' => array(
-          'type' => 'popupad',
-          'label' => t('Popup ad entity'),
+        'popup_onload' => array(
+          'type' => 'popup_onload',
+          'label' => t('Popup-on-load entity'),
         ),
       ),
-      'group' => t('Popup Ad'),
+      'group' => t('Popup On Load'),
     ),
   );
 }
@@ -45,17 +45,17 @@ function popupad_rules_condition_info() {
 /**
  * Implements hook_rules_action_info().
  */
-function popupad_rules_action_info() {
+function popup_onload_rules_action_info() {
   return array(
-    'popupad_action_display_popup' => array(
+    'popup_onload_action_display_popup' => array(
       'label' => t('Display a popup'),
       'parameter' => array(
-        'popupad' => array(
-          'type' => 'popupad',
-          'label' => t('Popup advertisement'),
+        'popup_onload' => array(
+          'type' => 'popup_onload',
+          'label' => t('Popup On Load'),
         ),
       ),
-      'group' => t('Popup Ad'),
+      'group' => t('Popup On Load'),
     ),
   );
 }
@@ -63,24 +63,24 @@ function popupad_rules_action_info() {
 /**
  * Condition to check if popup cookie is set.
  */
-function popupad_condition_check_cookie($popupad, $context = array()) {
-  return !popupad_check_time_cookie($popupad, $context = array());
+function popup_onload_condition_check_cookie($popup_onload, $context = array()) {
+  return !popup_onload_check_time_cookie($popup_onload, $context = array());
 }
 
 /**
  * Action to display a popup.
  */
-function popupad_action_display_popup($popupad, $context = array()) {
-  $popup_settings = popupad_prepare_popup($popupad);
-  popupad_add_popup($popup_settings);
-  popupad_save_time_cookie($popupad);
+function popup_onload_action_display_popup($popup_onload, $context = array()) {
+  $popup_settings = popup_onload_prepare_popup($popup_onload);
+  popup_onload_add_popup($popup_settings);
+  popup_onload_save_time_cookie($popup_onload);
 }
 
 /**
  * Popup ad integration access callback.
  */
-function popupad_integration_access($type, $name) {
+function popup_onload_integration_access($type, $name) {
   if ($type == 'event' || $type == 'condition') {
-    return entity_access('view', 'popupad');
+    return entity_access('view', 'popup_onload');
   }
 }

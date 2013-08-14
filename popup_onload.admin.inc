@@ -2,22 +2,22 @@
 
 /**
  * @file
- * Administrative interface callbacks of the Popup Ad module.
+ * Administrative interface callbacks of the Popup On Load module.
  */
 
 /**
  * Popup add/edit form.
  */
-function popupad_form($form, &$form_state, $popupad, $op = 'edit') {
+function popup_onload_form($form, &$form_state, $popup_onload, $op = 'edit') {
 
   if ($op == 'clone') {
-    $popupad->name .= ' (cloned)';
+    $popup_onload->name .= ' (cloned)';
   }
 
   $form['name'] = array(
     '#title' => t('Name'),
     '#type' => 'textfield',
-    '#default_value' => $popupad->name,
+    '#default_value' => $popup_onload->name,
     '#description' => t('The human-readable name of the popup.'),
     '#required' => TRUE,
   );
@@ -25,16 +25,16 @@ function popupad_form($form, &$form_state, $popupad, $op = 'edit') {
   $form['body'] = array(
     '#title' => t('Popup content'),
     '#type' => 'text_format',
-    '#default_value' => $popupad->body,
+    '#default_value' => $popup_onload->body,
     '#description' => t('The content of the popup.'),
     '#required' => TRUE,
-    '#format' => $popupad->format,
+    '#format' => $popup_onload->format,
   );
 
   $form['width'] = array(
     '#title' => t('Width'),
     '#type' => 'textfield',
-    '#default_value' => $popupad->width,
+    '#default_value' => $popup_onload->width,
     '#description' => t('The width of the popup, given in pixels. "0" defaults to auto-detection.'),
     '#required' => TRUE,
   );
@@ -42,7 +42,7 @@ function popupad_form($form, &$form_state, $popupad, $op = 'edit') {
   $form['height'] = array(
     '#title' => t('Height'),
     '#type' => 'textfield',
-    '#default_value' => $popupad->height,
+    '#default_value' => $popup_onload->height,
     '#description' => t('The height of the popup, given in pixels. "0" defaults to auto-detection.'),
     '#required' => TRUE,
   );
@@ -50,12 +50,12 @@ function popupad_form($form, &$form_state, $popupad, $op = 'edit') {
   $form['fixed_position'] = array(
     '#title' => t('Fixed position'),
     '#type' => 'checkbox',
-    '#default_value' => $popupad->fixed_position,
+    '#default_value' => $popup_onload->fixed_position,
     '#description' => t('Whether the popup is fixed in the browser window.'),
   );
 
-  $form_state['popupad'] = $popupad;
-  field_attach_form('popupad', $popupad, $form, $form_state);
+  $form_state['popup_onload'] = $popup_onload;
+  field_attach_form('popup_onload', $popup_onload, $form, $form_state);
 
   $submit = array();
 
@@ -76,17 +76,17 @@ function popupad_form($form, &$form_state, $popupad, $op = 'edit') {
 /**
  * Submit callback for the popup form.
  */
-function popupad_form_submit(&$form, &$form_state) {
-  $popupad = entity_ui_controller('popupad')->entityFormSubmitBuildEntity($form, $form_state);
+function popup_onload_form_submit(&$form, &$form_state) {
+  $popup_onload = entity_ui_controller('popup_onload')->entityFormSubmitBuildEntity($form, $form_state);
   // Save and go back.
-  $popupad->save();
-  $form_state['redirect'] = 'admin/structure/popupad';
+  $popup_onload->save();
+  $form_state['redirect'] = 'admin/structure/popup_onload';
 }
 
 /**
- * Popup Ad admin settings form.
+ * Popup On Load admin settings form.
  */
-function popupad_admin_settings_form($form, &$form_state) {
+function popup_onload_admin_settings_form($form, &$form_state) {
   // Check if colorbox library is installed.
   $library_colorbox = libraries_detect('colorbox');
 
@@ -99,7 +99,7 @@ function popupad_admin_settings_form($form, &$form_state) {
   }
 
   // Create the list of all sorting methods to be used in the form.
-  $methods = popupad_sort_methods();
+  $methods = popup_onload_sort_methods();
 
   $form['sort_methods'] = array(
     '#type' => 'fieldset',
@@ -109,10 +109,10 @@ function popupad_admin_settings_form($form, &$form_state) {
     '#description' => t('How to determine the popup, displayed to the user.'),
   );
 
-  $form['sort_methods'][POPUPAD_VAR_SORT_METHOD] = array(
+  $form['sort_methods'][POPUPONLOAD_VAR_SORT_METHOD] = array(
     '#type' => 'radios',
     '#options' => $methods,
-    '#default_value' => variable_get(POPUPAD_VAR_SORT_METHOD, POPUPAD_DEFAULT_SORT_METHOD),
+    '#default_value' => variable_get(POPUPONLOAD_VAR_SORT_METHOD, POPUPONLOAD_DEFAULT_SORT_METHOD),
   );
 
   $form['misc'] = array(
@@ -123,44 +123,44 @@ function popupad_admin_settings_form($form, &$form_state) {
     '#description' => t('Misc settings.'),
   );
 
-  $form['misc'][POPUPAD_VAR_COOKIE_LIFETIME] = array(
+  $form['misc'][POPUPONLOAD_VAR_COOKIE_LIFETIME] = array(
     '#type' => 'textfield',
     '#title' => t('Popup cookie lifetime'),
     '#description' => t('How many days popups will not be displayed to the user after the first display.'),
-    '#default_value' => variable_get(POPUPAD_VAR_COOKIE_LIFETIME, POPUPAD_DEFAULT_COOKIE_LIFETIME),
+    '#default_value' => variable_get(POPUPONLOAD_VAR_COOKIE_LIFETIME, POPUPONLOAD_DEFAULT_COOKIE_LIFETIME),
   );
 
-  $form['misc'][POPUPAD_VAR_DISPLAY_DELAY] = array(
+  $form['misc'][POPUPONLOAD_VAR_DISPLAY_DELAY] = array(
     '#type' => 'textfield',
     '#title' => t('Popup display delay'),
     '#description' => t('Delay in milliseconds before the popup is displayed to the user.'),
-    '#default_value' => variable_get(POPUPAD_VAR_DISPLAY_DELAY, POPUPAD_DEFAULT_DELAY),
+    '#default_value' => variable_get(POPUPONLOAD_VAR_DISPLAY_DELAY, POPUPONLOAD_DEFAULT_DELAY),
   );
 
-  $form['misc'][POPUPAD_VAR_USE_RULES] = array(
+  $form['misc'][POPUPONLOAD_VAR_USE_RULES] = array(
     '#type' => 'checkbox',
     '#title' => t('Disable normal popup processing'),
-    '#description' => t('If set, popupad module will stay enabled, but popup display will be invoked only as a Rules module action.'),
-    '#default_value' => variable_get(POPUPAD_VAR_USE_RULES, FALSE),
+    '#description' => t('If set, popup_onload module will stay enabled, but popup display will be invoked only as a Rules module action.'),
+    '#default_value' => variable_get(POPUPONLOAD_VAR_USE_RULES, FALSE),
   );
 
-  $form['misc'][POPUPAD_VAR_INCLUDE_PATHS] = array(
+  $form['misc'][POPUPONLOAD_VAR_INCLUDE_PATHS] = array(
     '#type' => 'textarea',
     '#title' => t('Display only at specified paths'),
     '#description' => t('Specify pages by using their paths. Enter one path per line. Use the "*" character as a wildcard. Leave empty to include all pages, except admin ones. %front is the front page.', array('%front' => '<front>')),
-    '#default_value' => variable_get(POPUPAD_VAR_INCLUDE_PATHS, ''),
+    '#default_value' => variable_get(POPUPONLOAD_VAR_INCLUDE_PATHS, ''),
   );
 
   return system_settings_form($form);
 }
 
 /**
- * Popup Ad admin settings form validation callback.
+ * Popup On Load admin settings form validation callback.
  */
-function popupad_admin_settings_form_validate($form, &$form_state) {
+function popup_onload_admin_settings_form_validate($form, &$form_state) {
   $numeric_values = array(
-    POPUPAD_VAR_COOKIE_LIFETIME,
-    POPUPAD_VAR_DISPLAY_DELAY,
+    POPUPONLOAD_VAR_COOKIE_LIFETIME,
+    POPUPONLOAD_VAR_DISPLAY_DELAY,
   );
   foreach ($numeric_values as $form_field) {
     if (!is_numeric($form_state['values'][$form_field])) {

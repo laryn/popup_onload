@@ -5,18 +5,18 @@
 
 (function ($) {
 
-Drupal.behaviors.initPopupAd = {
+Drupal.behaviors.initPopupOnLoad = {
   attach: function (context, settings) {
     if (!$.isFunction($.colorbox)) {
       return;
     }
 
-    $('body', context).once('popupad', function() {
-      var popupad_settings = settings.popupad;
+    $('body', context).once('popup_onload', function() {
+      var popup_onload_settings = settings.popup_onload;
 
       setTimeout(function() {
-        $.colorbox(popupad_settings);
-      }, popupad_settings.delay);
+        $.colorbox(popup_onload_settings);
+      }, popup_onload_settings.delay);
     });
   }
 }

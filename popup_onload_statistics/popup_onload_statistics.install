@@ -2,16 +2,16 @@
 
 /**
  * @file
- * Install, update, and uninstall functions for the Popup Ad Statistics module.
+ * Install, update, and uninstall functions for the Popup On Load Statistics module.
  */
 
 /**
  * Implements hook_schema().
  */
-function popupad_statistics_schema() {
+function popup_onload_statistics_schema() {
   $schema = array();
 
-  $schema['popupad_statistics'] = array(
+  $schema['popup_onload_statistics'] = array(
     'description' => 'Primary Key: Identifier for a popup.',
     'fields' => array(
       'aid' => array(

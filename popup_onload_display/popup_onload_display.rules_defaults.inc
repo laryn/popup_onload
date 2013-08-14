@@ -1,21 +1,21 @@
 <?php
 /**
  * @file
- * popupad_display.rules_defaults.inc
+ * popup_onload_display.rules_defaults.inc
  */
 
 /**
  * Implements hook_default_rules_configuration().
  */
-function popupad_display_default_rules_configuration() {
+function popup_onload_display_default_rules_configuration() {
   $items = array();
-  $items['rules_display_popupad'] = entity_import('rules_config', '{ "rules_display_popupad" : {
-      "LABEL" : "Display a popup ad",
+  $items['rules_display_popup_onload'] = entity_import('rules_config', '{ "rules_display_popup_onload" : {
+      "LABEL" : "Display a popup on page load",
       "PLUGIN" : "reaction rule",
-      "REQUIRES" : [ "popupad" ],
-      "ON" : [ "popupad_event_choose_popup" ],
-      "IF" : [ { "popupad_condition_check_cookie" : { "popupad" : [ "popupad" ] } } ],
-      "DO" : [ { "popupad_action_display_popup" : { "popupad" : [ "popupad" ] } } ]
+      "REQUIRES" : [ "popup_onload" ],
+      "ON" : [ "popup_onload_event_choose_popup" ],
+      "IF" : [ { "popup_onload_condition_check_cookie" : { "popup_onload" : [ "popup_onload" ] } } ],
+      "DO" : [ { "popup_onload_action_display_popup" : { "popup_onload" : [ "popup_onload" ] } } ]
     }
   }');
   return $items;

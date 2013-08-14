@@ -1,11 +1,11 @@
-name = Popup Advertisements
-description = Create popup advertisements on the site.
+name = Popup On Load
+description = Create popup on page load.
 core = 7.x
-package = Popup Ad
+package = Popup On Load
 
-configure = admin/config/user-interface/popupad
+configure = admin/config/user-interface/popup_onload
 
-files[] = popupad.entity.inc
+files[] = popup_onload.entity.inc
 
 dependencies[] = libraries (2.x)
 dependencies[] = entity
