@@ -42,7 +42,8 @@ The module depends on following modules:
 
 HOOKS
 -----
-The module provides and uses two hooks:
+The module provides and uses three hooks:
 
 - hook_popup_onload_check_display_conditions()
 - hook_popup_onload_sort_methods()
+- hook_popup_onload_js_settings_alter()
