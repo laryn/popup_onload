@@ -34,7 +34,10 @@ function popup_onload_statistics_entity_delete($entity, $type) {
  * Implements hook_init().
  */
 function popup_onload_statistics_init() {
-  popup_onload_statistics_add_js();
+  // Check if popup is added, and thus we need to add statistics JS.
+  if (drupal_static(POPUP_ONLOAD_IS_POPUP_ADDED)) {
+    popup_onload_statistics_add_js();
+  }
 }
 
 /**

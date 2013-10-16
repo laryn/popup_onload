@@ -25,6 +25,8 @@ define('POPUP_ONLOAD_VAR_USE_RULES', 'popup_onload_use_rules');
 
 define('POPUP_ONLOAD_VAR_INCLUDE_PATHS', 'popup_onload_include_paths');
 
+define('POPUP_ONLOAD_IS_POPUP_ADDED', 'popup_onload_is_popup_added');
+
 /**
  * A stub to fetch all popup_onload entities.
  */
@@ -270,6 +272,9 @@ function popup_onload_add_popup($popup_settings) {
 
   // Add some basic colorbox styling.
   drupal_add_css($module_path . '/popup_onload-colorbox.css');
+
+  // Tell others that the popup is finally added.
+  drupal_static(POPUP_ONLOAD_IS_POPUP_ADDED, TRUE);
 }
 
 /**
