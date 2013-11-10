@@ -176,7 +176,7 @@ function popup_onload_sort_methods() {
  */
 function popup_onload_prepare_popup($popup_onload) {
   $popup_settings = array(
-    'html' => $popup_onload->body,
+    'html' => check_markup($popup_onload->body, $popup_onload->format),
     'delay' => variable_get(POPUP_ONLOAD_VAR_DISPLAY_DELAY, POPUP_ONLOAD_DEFAULT_DELAY),
     'fixed' => (bool) $popup_onload->fixed_position,
     'popup_id' => $popup_onload->popup_id,
