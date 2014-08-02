@@ -86,12 +86,27 @@ function popup_onload_schema() {
 function popup_onload_uninstall() {
   field_attach_delete_bundle('popup_onload', 'popup_onload_basic');
 
-  // Include module to resolve constants names.
+  // Include module to resolve constants' names.
   require_once 'popup_onload.module';
 
   // Delete all popup_onload-related variables.
   variable_del(POPUP_ONLOAD_VAR_SORT_METHOD);
+  variable_del(POPUP_ONLOAD_VAR_COOKIE_NAME);
   variable_del(POPUP_ONLOAD_VAR_COOKIE_LIFETIME);
   variable_del(POPUP_ONLOAD_VAR_DISPLAY_DELAY);
   variable_del(POPUP_ONLOAD_VAR_USE_RULES);
+}
+
+/**
+ * Implements hook_update_N().
+ *
+ * 1. Convert popup cookie lifetime value into seconds.
+ * 2. Add a variable with popup cookie name.
+ */
+function popup_onload_update_7101() {
+  $popup_cookie_lifetime = variable_get(POPUP_ONLOAD_VAR_COOKIE_LIFETIME, 14);
+  // Convert days to seconds.
+  variable_set(POPUP_ONLOAD_VAR_COOKIE_LIFETIME, $popup_cookie_lifetime * 24 * 60 * 60);
+  // Set default popup cookie name.
+  variable_set(POPUP_ONLOAD_VAR_COOKIE_NAME, 'popup_onload_cookie_name');
 }

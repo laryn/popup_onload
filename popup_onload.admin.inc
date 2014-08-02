@@ -123,10 +123,17 @@ function popup_onload_admin_settings_form($form, &$form_state) {
     '#description' => t('Misc settings.'),
   );
 
+  $form['misc'][POPUP_ONLOAD_VAR_COOKIE_NAME] = array(
+    '#type' => 'textfield',
+    '#title' => t('Popup cookie name'),
+    '#description' => t('Override this only if your server configuration filters out cookies with certain pattern.'),
+    '#default_value' => variable_get(POPUP_ONLOAD_VAR_COOKIE_NAME, POPUP_ONLOAD_DEFAULT_COOKIE_NAME),
+  );
+
   $form['misc'][POPUP_ONLOAD_VAR_COOKIE_LIFETIME] = array(
     '#type' => 'textfield',
     '#title' => t('Popup cookie lifetime'),
-    '#description' => t('How many days popups will not be displayed to the user after the first display.'),
+    '#description' => t('How many seconds popups will not be displayed to the user after the first display.'),
     '#default_value' => variable_get(POPUP_ONLOAD_VAR_COOKIE_LIFETIME, POPUP_ONLOAD_DEFAULT_COOKIE_LIFETIME),
   );
 
