@@ -75,4 +75,31 @@ extends EntityAPIController {
     parent::save($entity, $transaction);
   }
 
+  /**
+   * Implements EntityAPIControllerInterface::buildContent().
+   *
+   * @param $content
+   *   Optionally. Allows pre-populating the built content to ease overridding
+   *   this method.
+   */
+  public function buildContent($entity, $view_mode = 'full', $langcode = NULL, $content = array()) {
+    $content['body'] = array(
+      '#theme' => 'field',
+      '#weight' => 0,
+      '#title' => t('Body'),
+      '#access' => TRUE,
+      '#label_display' => 'hidden',
+      '#view_mode' => $view_mode,
+      '#language' => $langcode ? $langcode : LANGUAGE_NONE,
+      '#field_name' => 'field_fake_body',
+      '#field_type' => 'text',
+      '#entity_type' => 'popup_onload',
+      '#bundle' => $entity->bundle_type,
+      '#items' => array(array('value' => $entity->body)),
+      '#formatter' => 'text_default',
+      0 => array('#markup' => check_markup($entity->body, $entity->format))
+    );
+    return parent::buildContent($entity, $view_mode, $langcode, $content);
+  }
+
 }

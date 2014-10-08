@@ -178,8 +178,9 @@ function popup_onload_sort_methods() {
  *   Popup javascript settings
  */
 function popup_onload_prepare_popup($popup_onload) {
+  $popup_markup = entity_view('popup_onload', array($popup_onload->popup_id => $popup_onload), 'full', NULL, TRUE);
   $popup_settings = array(
-    'html' => check_markup($popup_onload->body, $popup_onload->format),
+    'html' => drupal_render($popup_markup['popup_onload']),
     'delay' => variable_get(POPUP_ONLOAD_VAR_DISPLAY_DELAY, POPUP_ONLOAD_DEFAULT_DELAY),
     'fixed' => (bool) $popup_onload->fixed_position,
     'popup_id' => $popup_onload->popup_id,
@@ -310,6 +311,12 @@ function popup_onload_entity_info() {
         ),
       ),
     ),
+    'view modes' => array(
+      'full' => array(
+        'label' => t('Full content'),
+        'custom settings' => TRUE,
+      ),
+    ),
     'access callback' => 'popup_onload_access',
     'module' => 'popup_onload',
     'admin ui' => array(
@@ -412,7 +419,90 @@ function popup_onload_field_extra_fields() {
 
   // Since we have only one bundle type, we'll just provide the extra_fields
   // for it here.
-  $extra_fields['popup_onload']['popup_onload_basic']['form'] = $form_elements;
+  $extra_fields = array(
+    'popup_onload' => array(
+      'popup_onload_basic' => array(
+        'form' => $form_elements,
+      ),
+    ),
+  );
 
   return $extra_fields;
+}
+
+/**
+ * Implements hook_entity_property_info().
+ */
+function popup_onload_entity_property_info() {
+  $info = array();
+  // Add meta-data about the basic node properties.
+  $properties = &$info['popup_onload']['properties'];
+  $properties['popup_id'] = array(
+    'label' => t('Popup ID'),
+    'type' => 'integer',
+    'description' => t('Popup ID'),
+    'schema field' => 'popup_id',
+    'setter callback' => 'entity_property_verbatim_set',
+  );
+  $properties['bundle_type'] = array(
+    'label' => t("Bundle type"),
+    'type' => 'token',
+    'description' => t("The type of the entity."),
+    'setter callback' => 'entity_property_verbatim_set',
+    'required' => TRUE,
+    'schema field' => 'bundle_type',
+  );
+  $properties['language'] = array(
+    'label' => t("Language"),
+    'type' => 'token',
+    'description' => t("The language of the popup."),
+    'setter callback' => 'entity_property_verbatim_set',
+    'options list' => 'entity_metadata_language_list',
+    'schema field' => 'language',
+    'setter permission' => 'administer popup_onload entities',
+  );
+  $properties['name'] = array(
+    'label' => t("name"),
+    'description' => t("The name of the popup."),
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'name',
+    'required' => TRUE,
+  );
+  $properties['body'] = array(
+    'type' => 'text_formatted',
+    'label' => t('The main body text'),
+    'setter callback' => 'entity_property_verbatim_set',
+    'property info' => entity_property_text_formatted_info(),
+    'auto creation' => 'entity_property_create_array',
+  );
+  $properties['format'] = array(
+    'label' => t("Format"),
+    'description' => t("The format of the popup body."),
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'format',
+    'required' => TRUE,
+  );
+  $properties['width'] = array(
+    'label' => t("Width"),
+    'description' => t("Popup width."),
+    'type' => 'integer',
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'width',
+  );
+  $properties['height'] = array(
+    'label' => t("Height"),
+    'description' => t("Popup height."),
+    'type' => 'integer',
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'height',
+  );
+  $properties['fixed_position'] = array(
+    'label' => t("Fixed position"),
+    'description' => t("Whether the popup position is fixed."),
+    'type' => 'boolean',
+    'setter callback' => 'entity_property_verbatim_set',
+    'schema field' => 'fixed_position',
+  );
+
+  return $info;
 }
