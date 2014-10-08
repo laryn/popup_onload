@@ -234,7 +234,7 @@ function popup_onload_libraries_info() {
     'download url' => 'http://www.jacklmoore.com/colorbox',
     'version arguments' => array(
       'file' => 'jquery.colorbox-min.js',
-      'pattern' => '@Colorbox v([0-9\.a-z]+)@',
+      'pattern' => '@Colorbox.+([0-9\.a-z]+)@',
       'lines' => 5,
     ),
     'files' => array(
