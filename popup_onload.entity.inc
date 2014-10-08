@@ -20,6 +20,7 @@ extends Entity {
 
   /**
    * Overriden default entity label callback.
+   *
    * @see Entity::defaultLabel()
    */
   protected function defaultLabel() {
@@ -43,6 +44,7 @@ extends EntityAPIController {
 
   /**
    * Create a popup_onload.
+   *
    * @see EntityAPIController::create()
    */
   public function create(array $values = array()) {
@@ -66,6 +68,7 @@ extends EntityAPIController {
 
   /**
    * Save the popup.
+   *
    * @see EntityAPIController::save()
    */
   public function save($entity, DatabaseTransaction $transaction = NULL) {
@@ -78,7 +81,7 @@ extends EntityAPIController {
   /**
    * Implements EntityAPIControllerInterface::buildContent().
    *
-   * @param $content
+   * @param array $content
    *   Optionally. Allows pre-populating the built content to ease overridding
    *   this method.
    */
@@ -97,7 +100,7 @@ extends EntityAPIController {
       '#bundle' => $entity->bundle_type,
       '#items' => array(array('value' => $entity->body)),
       '#formatter' => 'text_default',
-      0 => array('#markup' => check_markup($entity->body, $entity->format))
+      0 => array('#markup' => check_markup($entity->body, $entity->format),),
     );
     return parent::buildContent($entity, $view_mode, $langcode, $content);
   }

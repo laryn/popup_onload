@@ -73,10 +73,10 @@ function popup_onload_popup_onload_check_display_conditions($popup_onload) {
  * Determine whether the popup is allowed to display.
  *
  * @param object $popup_onload
- *   Fully populated popup_onload entity object
+ *   Fully populated popup_onload entity object.
  *
  * @return bool
- *   If at least one hook returns FALSE, the popup is denied
+ *   If at least one hook returns FALSE, the popup is denied.
  */
 function popup_onload_check_display_conditions($popup_onload) {
   $conditions = module_invoke_all('popup_onload_check_display_conditions', $popup_onload);
@@ -172,7 +172,7 @@ function popup_onload_sort_methods() {
  * Generate Javascript parameters for popup.
  *
  * @param object $popup_onload
- *   Fully populated popup_onload entity
+ *   Fully populated popup_onload entity.
  *
  * @return array
  *   Popup javascript settings
