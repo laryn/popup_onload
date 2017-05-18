@@ -35,6 +35,4 @@ function hook_popup_onload_check_display_conditions($popup_onload) {
  * Alter colorbox JS settings right before the popup is displayed.
  */
 function hook_popup_onload_js_settings_alter(&$popup_settings, &$popup_onload) {
-  // Disable closing popup colorbox on 'esc' key press.
-  $popup_settings['escKey'] = FALSE;
 }

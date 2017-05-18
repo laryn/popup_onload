@@ -5,7 +5,6 @@ CONTENTS OF THIS FILE
 ----------------------
 
   * Introduction
-  * Dependencies
   * Hooks
 
 
@@ -24,21 +23,6 @@ module possibly fits your needs. It does some very simple things:
 
 2. Provides some basic configuration options, which can be extended by other
    modules via hooks and standard Drupal form alter functions.
-
-3. Provides an action for popup on load displaying. The action can be used as
-   a result of rule evaluation.
-
-
-DEPENDENCIES
-------------
-The module depends on following modules:
-
-1. Entity API (http://drupal.org/project/entity)
-
-2. Libraries API (http://drupal.org/project/libraries)
-
-...and uses Colorbox (http://www.jacklmoore.com/colorbox) library.
-
 
 HOOKS
 -----
